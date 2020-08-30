@@ -6,7 +6,6 @@ import java.util.Properties;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -14,6 +13,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.service.ServiceRegistry;
+
 import du.iit.examsystem.*;
 
 public class DatabaseUtils {
@@ -40,7 +40,7 @@ public class DatabaseUtils {
                 settings.put(Environment.C3P0_MAX_SIZE, 200);
                 settings.put(Environment.C3P0_TIMEOUT, 300);
                 configuration.setProperties(settings);
-        		
+                
                 configuration.addAnnotatedClass(Exam.class);
         		configuration.addAnnotatedClass(MCQ.class);
         		configuration.addAnnotatedClass(Answer.class);
@@ -95,7 +95,8 @@ public class DatabaseUtils {
 	    CriteriaQuery<Object> query = builder.createQuery(entity);
 	    Root<Object> variableRoot = query.from(entity);
 	    query.select(variableRoot);
-
+	    query.orderBy(builder.desc(variableRoot.get("ID")));
+		
 	    List<Object> result = session.createQuery(query).getResultList();
 		
 		tx.commit();

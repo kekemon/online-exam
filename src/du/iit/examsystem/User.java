@@ -5,52 +5,39 @@ import javax.persistence.*;
 @Entity
 public abstract class User {
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
-	protected int userID;
-
+	protected int ID;
+	
 	@Column
 	private String fullName;
 	private String email;
 	private String password;
-	private String role;
 	
 	public User() {}
 	
-	public User(String fullName, String email, String password, String role) {
+	public User(String fullName, String email, String password) {
 		this.fullName = fullName;
 		this.email = email;
 		this.password = password;
-		this.role = role;
+	}
+
+	public int getID() {
+		return ID;
 	}
 	
 	public String getFullName() {
 		return fullName;
 	}
 	
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
-	}
-	
 	public String getEmail() {
 		return email;
-	}
-	
-	public void setEmail(String email) {
-		this.email = email;
 	}
 	
 	public String getPassword() {
 		return password;
 	}
 	
-	public void setPassword(String password) {
-		this.password = password;
+	public boolean check(String email, String password) {
+		return this.email.equals(email) && this.password.equals(password);
 	}
 	
-	public String getRole() {
-		return role;
-	}
-	
-	public void setRole(String role) {
-		this.role = role;
-	}
 }

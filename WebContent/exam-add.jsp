@@ -1,17 +1,23 @@
 <!DOCTYPE html>
 <%@page contentType="text/html; charset=UTF-8"%>
-<%@page import="java.util.*"%>
 <%@page import="du.iit.examsystem.*"%>
 <%@page import="du.iit.examsystem.helper.*"%>
 
+<%
+	Object userID = request.getSession().getAttribute(CommonUtits.SESSION_KEY_USERID);
+	if(userID == null) {
+		response.sendRedirect("index.jsp");
+		return;
+	}
+%>
 
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="icon" href="https://getbootstrap.com/docs/4.0/assets/img/favicons/favicon.ico">
+    <link rel="icon" href="./resources/download.png">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <link href="https://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" rel="stylesheet" />
 	<script src="https://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
-	<title>Online Exam System | Exam Add</title>
+	<title>Online Exam System</title>
 
     <!-- Bootstrap core CSS -->
     <link href="./resources/bootstrap.min.css" rel="stylesheet">
@@ -37,8 +43,8 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
-      <a class="nav-item nav-link" href="index.jsp">Home</a>
-      <a class="nav-item nav-link" href="exam-add.jsp">Exam Add</a>
+      <a class="nav-item nav-link" href="home.jsp">Home</a>
+      <a class="nav-item nav-link" href="exam-add.jsp">Add Exam</a>
       <a class="nav-item nav-link" href="logout">Logout</a>
     </div>
   </div>
@@ -55,7 +61,7 @@
 	      			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 	          			<span aria-hidden="true">&times;</span>
 	        		</button>
-	  				<h5 align="center">Success!</h5>
+	  				<h5 align="center">Successfully added Exam</h5>
 	  				<div class="swal2-icon swal2-success swal2-animate-success-icon" style="display: flex;">
 			   			<span class="swal2-success-line-tip"></span>
 			   			<span class="swal2-success-line-long"></span>
@@ -66,7 +72,6 @@
 	  	</div>
 	  </div>
       
-      
       <div class="modal fade" id="failModal" tabindex="-1" role="dialog" aria-hidden="true">
 	  	<div class="modal-dialog modal-sm" role="document">
 	    	<div class="modal-content">
@@ -74,7 +79,7 @@
 	      			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 	          			<span aria-hidden="true">&times;</span>
 	        		</button>
-	  				<h5 align="center">Fail!</h5>
+	  				<h5 align="center">Failed to add Exam!</h5>
 	  				<div class="swal2-icon swal2-error swal2-animate-error-icon" style="display: flex;">
 			   			<span class="swal2-x-mark">
 			   			<span class="swal2-x-mark-line-left"></span>
@@ -86,10 +91,8 @@
 	  	</div>
 	  </div>
     
-    
-    
       <div class="py-4 text-center">
-        <img class="d-block mx-auto mb-1" src="./resources/bootstrap-solid.svg" alt="" width="36" height="36">
+        <img class="d-block mx-auto mb-1" src="./resources/download.png" alt="" width="100" height="60">
        </div>
 
       <div class="row">
@@ -162,7 +165,7 @@
               </div>
               
               <div class="col-md-4 mb-3">
-                <input type="number" class="form-control" id="answer" max=4 min=1 placeholder="Option #" value="" required="">
+                <input type="number" class="form-control" id="answer" max=4 min=1 placeholder="Answer Option #" value="" required="">
 				<div class="invalid-feedback">
 				  Valid Answer is required.
 				</div>
@@ -229,7 +232,7 @@
 		window.addEventListener('load', function() {
 			
 			$('#successModal').on('click', function(event) {
-				document.location.href = "index.jsp";
+				document.location.href = "home.jsp";
 			});
 			
 			if ($('#myTable tbody').children().length == 0) {
@@ -237,7 +240,6 @@
 	    	}
 			
 			var forms = document.getElementsByClassName('needs-validation');
-
 			
 			document.getElementById('addbtn').addEventListener('click', function(event) {
 				var form = document.getElementById("addForm");
@@ -273,29 +275,29 @@
 					event.stopPropagation();
 					form.classList.add('was-validated');
 				} else {
-					var mcq = Array();
+					var mcqs = Array();
 
 					$("table #mtbody tr").each(function(i, v){
-						mcq[i] = Array();
+						mcqs[i] = Array();
 
-						mcq[i] = { "question" : $(this).children('td:eq(0)').text()
+						mcqs[i] = { "question" : $(this).children('td:eq(0)').text()
 						        , "option1" : $(this).children('td:eq(1)').text()
-						        , "option2" : $(this).children('td:eq(1)').text()
-						        , "option3" : $(this).children('td:eq(1)').text()
-						        , "option4" : $(this).children('td:eq(1)').text()
-						        , "answer" : $(this).children('td:eq(2)').text()
+						        , "option2" : $(this).children('td:eq(2)').text()
+						        , "option3" : $(this).children('td:eq(3)').text()
+						        , "option4" : $(this).children('td:eq(4)').text()
+						        , "answer" : $(this).children('td:eq(5)').text()
 					    }
 					})
 
 					var exam = Array();
 					exam = {  "subject" : document.getElementById("subject").value
 					        , "duration" : document.getElementById("duration").value
-					        , "mcq" : mcq
+					        , "mcqs" : mcqs
 				    }
 					
 					$.ajax({
 						type : "post",
-						url : "AddExam",
+						url : "add-exam",
 						data: JSON.stringify(exam),
 					    success : function(msg) {
 					    	if ( msg.indexOf("Successfully") >= 0) {
@@ -316,5 +318,11 @@
     })();
    
     </script>
+    
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    
+    <script src="./resources/bootstrap.min.js.download"></script>
    	</body>
 </html>

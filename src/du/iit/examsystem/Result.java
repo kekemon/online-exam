@@ -6,10 +6,10 @@ import javax.persistence.*;
 @Entity
 public class Result {
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
-	protected int resultID;
+	protected int ID;
 
-	@OneToOne(cascade = CascadeType.ALL)
-	private Student student;
+	@ManyToOne(cascade = CascadeType.ALL)
+	private User student;
 	
 	@Basic
     private Date startDateTime;
@@ -21,11 +21,15 @@ public class Result {
 	
 	public Result() {}
 	
-	public Result(Student student, Date startDateTime, Date endDateTime, int marks) {
+	public Result(User student, Date startDateTime, Date endDateTime, int marks) {
 		this.student = student;
 		this.startDateTime = startDateTime;
 		this.endDateTime = endDateTime;
 		this.marks = marks;
+	}
+	
+	public int getID() {
+		return ID;
 	}
 
 	public void publishResult(int mark) {
@@ -33,7 +37,7 @@ public class Result {
 		this.marks = mark;
 	}
 
-	public Student getStudent() {
+	public User getStudent() {
 		return student;
 	}
 

@@ -5,13 +5,10 @@ import javax.persistence.*;
 @Entity
 public class Student extends User {
 
-	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
-	protected int userID;
-	
 	public Student() {}
 	
-	public Student(String fullName, String email, String password, String role) {
-		super(fullName, email, password, role);
+	public Student(String fullName, String email, String password) {
+		super(fullName, email, password);
 		// TODO Auto-generated constructor stub
 	}
 

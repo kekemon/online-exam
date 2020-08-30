@@ -5,32 +5,33 @@ import javax.persistence.*;
 @Entity
 public class Answer {
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
-	protected int answerID;
+	protected int ID;
 
-	@OneToOne(cascade = CascadeType.ALL)
-	private Student student;
-	@OneToOne(cascade = CascadeType.ALL)
-	private MCQ mcq;
+	@ManyToOne(cascade = CascadeType.ALL)
+	private User student;
 	
 	@Column
 	private int studentChoice;
 
 	public Answer() {}
 	
-	public Answer(Student student, MCQ mcq, int studentChoice) {
+	public Answer(User student, MCQ mcq, int studentChoice) {
 		this.student = student;
-		this.mcq = mcq;
 		this.studentChoice = studentChoice;
 	}
+	
+	public int getID() {
+		return ID;
+	}
 
-	public Student getStudent() {
+	public User getStudent() {
 		return student;
 	}
 
-	public MCQ getMcq() {
-		return mcq;
+	public void setStudentChoice(int studentChoice) {
+		this.studentChoice = studentChoice;
 	}
-
+	
 	public int getStudentChoice() {
 		return studentChoice;
 	}
