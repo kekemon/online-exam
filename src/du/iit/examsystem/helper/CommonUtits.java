@@ -29,31 +29,27 @@ public class CommonUtits {
 		return null;
 	}
 
-	public static int getNextMCQ(int examID, int currentMCQID) {
+	public static int[] getMCQs(int examID) {
 		Exam exam = getExam(examID);
 		
 		Set<MCQ> mcqs = exam.getMcqs();
-
 		int[] arr = new int[mcqs.size()];
 		int i = 0;
 		for (MCQ mcq : mcqs) {
 			arr[i++] = mcq.getID();
 		}
 		Arrays.sort(arr);
-		int index = Arrays.binarySearch(arr, currentMCQID);
-		return index+1 >= mcqs.size() ? -1 : arr[index+1];
+		return arr;
 	}
-
+	
+	public static int getNextMCQ(int examID, int currentMCQID) {
+		int[] arr = getMCQs(examID);
+		int index = Arrays.binarySearch(arr, currentMCQID);
+		return index+1 >= arr.length ? -1 : arr[index+1];
+	}
+	
 	public static int getPrevMCQ(int examID, int currentMCQID) {
-		Exam exam = getExam(examID);
-		
-		Set<MCQ> mcqs = exam.getMcqs();
-		int[] arr = new int[mcqs.size()];
-		int i = 0;
-		for (MCQ mcq : mcqs) {
-			arr[i++] = mcq.getID();
-		}
-		Arrays.sort(arr);
+		int[] arr = getMCQs(examID);
 		int index = Arrays.binarySearch(arr, currentMCQID);
 		return index-1 < 0 ? -1 : arr[index-1];
 	}
@@ -71,11 +67,9 @@ public class CommonUtits {
 	}
 
 	public static String getAnswer(int studentID, int mcqID) {
-		System.out.println(studentID + " " + mcqID);
 		MCQ mcq = getMCQ(mcqID);
 		for (Answer answer : mcq.getAnswers()) {
 			if (answer.getStudent().getID() == studentID) {
-				System.out.println("N " +answer.getStudent().getID());
 				return answer.getStudentChoice() +"";
 			}
 		}
@@ -117,23 +111,64 @@ public class CommonUtits {
 		
 		Answer answer = new Answer(student, mcq, studentChoice);
 		mcq.getAnswers().add(answer);
-		//exam.setAnswers(answers);
 		DatabaseUtils.update(mcq);
 	}
 	
-	public static boolean startExam(int studentID, int examID) {
+	public static Result getResult(int studentID, int examID) {
 		Exam exam = getExam(examID);
 		
 		for (Result result : exam.getResults()) {
 			if (result.getStudent().getID() == studentID) {
-				if (result.getEndDateTime() != null) {
-					return false;
-				}
-				return true;
+				return result;
 			}
 		}
-		Result result = new Result(getUser(studentID), new Date(), null, 0);
-		exam.getResults().add(result);
+		
+		return null;
+	}
+	
+	public static boolean isFinisedExam(int studentID, int examID) {
+		Result result = getResult(studentID, examID);
+		if (result == null || result.getEndDateTime() == null) {
+			return false;
+		} 
+		return true;
+	}	
+	
+	public static void finisExam(Exam exam, Result result) {
+		if (result.getEndDateTime() == null) {
+			int correct = 0;
+			int wrong = 0;
+			int skiped = 0;
+			
+			for (MCQ mcq : exam.getMcqs()) {
+				Answer answer = mcq.getAnswer(result.getStudent());
+				if (answer == null) {
+					skiped++;
+				} else if (answer != null && answer.getStudentChoice() == mcq.getCorrectAns()) {
+					correct++;
+				} else {
+					wrong++;
+				}
+			}
+			
+			result.publishResult(correct, skiped, wrong);
+			DatabaseUtils.update(result);
+		}
+	}
+		
+	
+	public static boolean startExam(int studentID, int examID) {
+		Result result = getResult(studentID, examID);
+		if (result != null) {
+			if (result.getEndDateTime() == null) {
+				return true;
+			}
+			return false;
+		} 
+		System.out.println("SS");
+		Exam exam = getExam(examID);
+		Result mResult = new Result(getUser(studentID), new Date());
+		exam.getResults().add(mResult);
 		DatabaseUtils.update(exam);
 		
 		new Thread(new Runnable() {
@@ -142,8 +177,7 @@ public class CommonUtits {
 			public void run() {
 				try {
 					Thread.sleep(1000 * 60 * exam.getDuration());
-					result.publishResult(10);
-					DatabaseUtils.update(result);
+					CommonUtits.finisExam(exam, mResult);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

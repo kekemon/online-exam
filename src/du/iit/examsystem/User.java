@@ -40,4 +40,9 @@ public abstract class User {
 		return this.email.equals(email) && this.password.equals(password);
 	}
 	
+	@Override
+	public boolean equals(Object object) {
+		User temp = (User) object;
+		return this.getID() == temp.getID();
+	}
 }

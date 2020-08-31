@@ -221,10 +221,62 @@
     	}
     }
     
-    function addtoTable(question, option1, option2, option3, option4, answer) {
+    function addtoTable() {
     	$("#myTable").show();
+    	$("#myTable").show();
+		var question = $("#question").val();
+		var option1 = $("#option1").val();
+		var option2 = $("#option2").val();
+		var option3 = $("#option3").val();
+		var option4 = $("#option4").val();
+		var answer = $("#answer").val();
     	var markup = "<tr><td>" + question + "</td><td>" + option1 + "</td><td>" + option2 + "</td><td>" + option3 + "</td><td>" + option4 + "</td><td>" + answer + "</td></tr>";
     	$("table tbody").append(markup);
+    	$('#question').val("");
+		$('#option1').val("");
+		$('#option2').val("");
+		$('#option3').val("");
+		$('#option4').val("");
+		$('#answer').val("");
+		document.getElementById("question").focus();
+    }
+    
+    function addExam() {
+    	var mcqs = Array();
+
+		$("table #mtbody tr").each(function(i, v){
+			mcqs[i] = Array();
+
+			mcqs[i] = { "question" : $(this).children('td:eq(0)').text()
+			        , "option1" : $(this).children('td:eq(1)').text()
+			        , "option2" : $(this).children('td:eq(2)').text()
+			        , "option3" : $(this).children('td:eq(3)').text()
+			        , "option4" : $(this).children('td:eq(4)').text()
+			        , "answer" : $(this).children('td:eq(5)').text()
+		    }
+		})
+
+		var exam = Array();
+		exam = {  "subject" : document.getElementById("subject").value
+		        , "duration" : document.getElementById("duration").value
+		        , "mcqs" : mcqs
+	    }
+		
+		$.ajax({
+			type : "post",
+			url : "add-exam",
+			data: JSON.stringify(exam),
+		    success : function(msg) {
+		    	if ( msg.indexOf("Successfully") >= 0) {
+		    		$('#successModal').modal('show');	
+		    	} else {
+		    		$('#failModal').modal('show');
+		    	}
+			},
+			failure: function(msg) {
+				$('#failModal').modal('show');
+		    }
+		});
     }
     
     (function() {
@@ -248,23 +300,7 @@
 					event.stopPropagation();
 					form.classList.add('was-validated');
 				} else {
-					$("#myTable").show();
-					var question = $("#question").val();
-					var option1 = $("#option1").val();
-					var option2 = $("#option2").val();
-					var option3 = $("#option3").val();
-					var option4 = $("#option4").val();
-					var answer = $("#answer").val();
-					
-					var comment = $("#comment").val();
-					addtoTable(question, option1, option2, option3, option4, answer);
-					$('#question').val("");
-					$('#option1').val("");
-					$('#option2').val("");
-					$('#option3').val("");
-					$('#option4').val("");
-					$('#answer').val("");
-					document.getElementById("question").focus();
+					addtoTable();
 				}
             }, false);
 			
@@ -275,41 +311,7 @@
 					event.stopPropagation();
 					form.classList.add('was-validated');
 				} else {
-					var mcqs = Array();
-
-					$("table #mtbody tr").each(function(i, v){
-						mcqs[i] = Array();
-
-						mcqs[i] = { "question" : $(this).children('td:eq(0)').text()
-						        , "option1" : $(this).children('td:eq(1)').text()
-						        , "option2" : $(this).children('td:eq(2)').text()
-						        , "option3" : $(this).children('td:eq(3)').text()
-						        , "option4" : $(this).children('td:eq(4)').text()
-						        , "answer" : $(this).children('td:eq(5)').text()
-					    }
-					})
-
-					var exam = Array();
-					exam = {  "subject" : document.getElementById("subject").value
-					        , "duration" : document.getElementById("duration").value
-					        , "mcqs" : mcqs
-				    }
-					
-					$.ajax({
-						type : "post",
-						url : "add-exam",
-						data: JSON.stringify(exam),
-					    success : function(msg) {
-					    	if ( msg.indexOf("Successfully") >= 0) {
-					    		$('#successModal').modal('show');	
-					    	} else {
-					    		$('#failModal').modal('show');
-					    	}
-						},
-						failure: function(msg) {
-							$('#failModal').modal('show');
-					    }
-					});
+					addExam();
 				}
 
             }, false);

@@ -53,4 +53,19 @@ public class Exam {
 	public Set<Result> getResults() {
 		return results;
 	}
+
+	public Result getResult(User student) {
+		for (Result result : results) {
+			if (result.getStudent().equals(student)) {
+				return result;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		Exam temp = (Exam) object;
+		return this.getID() == temp.getID();
+	}
 }

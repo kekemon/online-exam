@@ -18,15 +18,18 @@
 		return;
 	}
 	
-	
 	boolean canGiveExam = CommonUtits.startExam(Integer.parseInt(userID.toString()), Integer.parseInt(examID));
 	
 	if(!canGiveExam) {
 		response.sendRedirect("home.jsp");
 		return;
 	}
-	
-	MCQ mcq = CommonUtits.getMCQ(Integer.parseInt(mcqID));
+	MCQ mcq;
+	if (mcqID == null) {
+		mcq = CommonUtits.getMCQ(CommonUtits.getMCQs(Integer.parseInt(examID))[0]);
+	} else {
+		mcq = CommonUtits.getMCQ(Integer.parseInt(mcqID));
+	}
 %>
 
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -207,7 +210,57 @@
     <script src="./resources/bootstrap.min.js.download"></script>
     <script>	
     
+    function finishExam() {
+    	var answer = Array();
+		answer = {  "exam" : <%=examID%>
+				, "mcq" : -1
+		}
+
+		$.ajax({
+			type : "post",
+			url : "add-answer",
+			data: JSON.stringify(answer),
+			success : function(msg) {
+				if ( msg.indexOf("Successfully") >= 0) {
+					$('#successModal').modal('show');
+				} else {
+					$('#failModal').modal('show');
+				}
+			},
+			failure: function(msg) {
+				$('#failModal').modal('show');
+			}
+		});
+   	}
     
+    function addAnswer() {
+    	var answer = Array();
+		answer = {  "exam" : <%=examID%>
+		        , "mcq" : <%=mcq.getID()%>
+		        , "choice" : document.getElementById("answer").value
+	    }
+		
+		$.ajax({
+			type : "post",
+			url : "add-answer",
+			data: JSON.stringify(answer),
+		    success : function(msg) {
+		    	if ( msg.indexOf("Successfully") >= 0) {
+			    	var nextID = <%=next%>;
+			    	if (nextID == -1) {
+			    		finishExam();
+			    	} else {
+			    		document.location.href = "answer.jsp?exam=" + <%=examID%> + "&mcq=" + nextID;	
+			    	}
+		    	} else {
+		    		$('#failModal').modal('show');
+		    	}
+			},
+			failure: function(msg) {
+				$('#failModal').modal('show');
+		    }
+		});
+    }
     
     (function() {
         'use strict';
@@ -225,34 +278,8 @@
 					event.preventDefault();
 					event.stopPropagation();
 					form.classList.add('was-validated');
-					
 				} else {
-					var answer = Array();
-					answer = {  "exam" : <%=examID%>
-					        , "mcq" : <%=mcq.getID()%>
-					        , "choice" : document.getElementById("answer").value
-				    }
-					
-					$.ajax({
-						type : "post",
-						url : "add-answer",
-						data: JSON.stringify(answer),
-					    success : function(msg) {
-					    	if ( msg.indexOf("Successfully") >= 0) {
-						    	var nextID = <%=next%>;
-						    	if (nextID == -1) {
-						    		$('#successModal').modal('show');
-						    	} else {
-						    		document.location.href = "answer.jsp?exam=" + <%=examID%> + "&mcq=" + nextID;	
-						    	}
-					    	} else {
-					    		$('#failModal').modal('show');
-					    	}
-						},
-						failure: function(msg) {
-							$('#failModal').modal('show');
-					    }
-					});
+					addAnswer();
 				}
 
             }, false);

@@ -17,24 +17,30 @@ public class Result {
     private Date endDateTime;
 	
 	@Column
-	private int marks;
+	private int correct;
+	
+	@Column
+	private int skipped;
+	
+	@Column
+	private int wronng;
 	
 	public Result() {}
 	
-	public Result(User student, Date startDateTime, Date endDateTime, int marks) {
+	public Result(User student, Date startDateTime) {
 		this.student = student;
 		this.startDateTime = startDateTime;
-		this.endDateTime = endDateTime;
-		this.marks = marks;
 	}
 	
 	public int getID() {
 		return ID;
 	}
 
-	public void publishResult(int mark) {
+	public void publishResult(int correct, int skipped, int wrong) {
 		this.endDateTime = new Date();
-		this.marks = mark;
+		this.correct = correct;
+		this.skipped = skipped;
+		this.wronng = wrong;
 	}
 
 	public User getStudent() {
@@ -49,7 +55,21 @@ public class Result {
 		return endDateTime;
 	}
 
-	public int getMarks() {
-		return marks;
+	public int getCorrect() {
+		return correct;
+	}
+	
+	public int getSkipped() {
+		return skipped;
+	}
+	
+	public int getWrong() {
+		return wronng;
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		Result temp = (Result) object;
+		return this.getID() == temp.getID();
 	}
 }

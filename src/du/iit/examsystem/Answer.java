@@ -35,5 +35,10 @@ public class Answer {
 	public int getStudentChoice() {
 		return studentChoice;
 	}
-	
+
+	@Override
+	public boolean equals(Object object) {
+		Answer temp = (Answer) object;
+		return this.getID() == temp.getID();
+	}
 }

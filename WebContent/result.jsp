@@ -10,6 +10,10 @@
 		response.sendRedirect("index.jsp");
 		return;
 	}
+	
+	String examID = request.getParameter("exam");
+	
+	User user = CommonUtits.getUser(Integer.parseInt(userID.toString()));
 %>
 
 <html lang="en"><head>
@@ -47,7 +51,6 @@
 	    <div class="navbar-nav">
 	      <a class="nav-item nav-link" href="home.jsp">Home</a>
       	  <% 
-	  	  	 User user = CommonUtits.getUser(Integer.parseInt(userID.toString()));
 	  	  	 if (user instanceof Teacher) {
 	  	  		 %>
 	  	  		 	<a class="nav-item nav-link" href="exam-add.jsp">Add Exam</a>
@@ -71,43 +74,44 @@
 		  <table id="myTable" style="text-align:center" class="table table-sm table-hover table-bordered">
 			<thead>
 			<tr>
-			  <th scope="col">Subject</th>
-			  <th scope="col">Teacher</th>
-			  <th scope="col">Duration(min)</th>
-			  <th scope="col">Action</th>
+			  <th scope="col">Name</th>
+			  <th scope="col">Start Time</th>
+			  <th scope="col">End Time</th>
+			  <th scope="col">Correct</th>
+			  <th scope="col">Skipped</th>
+			  <th scope="col">Wrong</th>
 			</tr>
 		  </thead>
 		  <tbody id="mtbody">
 			<%
-				List<Object> exams = DatabaseUtils.getList(Exam.class);
-				for (Object object : exams) {
-					Exam exam = (Exam) object;
+				if (user instanceof Student) {
+					Result result = CommonUtits.getResult(user.getID(), Integer.parseInt(examID));
 					%>
-					<tr>
-					  <td scope="col"><%=exam.getSubject() %></td>
-					  <td scope="col"><%=exam.getTeacher().getFullName() %></td>
-					  <td scope="col"><%=exam.getDuration() %></td>
-					  <% 
-					  	if (user instanceof Teacher) {
-					  		%>
-					  			<td scope="col"><a href="result.jsp?exam=<%=exam.getID()%>">Result</a></td>
-					  		<%
-					  	} else {
-					  		if (CommonUtits.isFinisedExam(user.getID(), exam.getID())) {
-					  			%>
-					  				<td scope="col"><a href="result.jsp?exam=<%=exam.getID()%>">Result</a></td>
-					  			<%
-					  		} else {
-					  			%>
-					  				<td scope="col"><a href="answer.jsp?exam=<%=exam.getID()%>">Start</a></td>
-					  			<%
-					  		}
-					  	}
-					  %>
-					  
-					</tr>
+						<tr>
+					  		<td scope="col"><%=result.getStudent().getFullName() %></td>
+					  		<td scope="col"><%=result.getStartDateTime() %></td>
+					  		<td scope="col"><%=result.getEndDateTime() %></td>
+					  		<td scope="col"><%=result.getCorrect() %></td>
+					  		<td scope="col"><%=result.getSkipped() %></td>
+					  		<td scope="col"><%=result.getWrong() %></td>
+					  	</tr>
 					<%
+				} else {
+					Exam exam = CommonUtits.getExam(Integer.parseInt(examID));
+					for(Result result : exam.getResults()) {
+						%>
+							<tr>
+						  		<td scope="col"><%=result.getStudent().getFullName() %></td>
+						  		<td scope="col"><%=result.getStartDateTime() %></td>
+						  		<td scope="col"><%=result.getEndDateTime() %></td>
+						  		<td scope="col"><%=result.getCorrect() %></td>
+					  			<td scope="col"><%=result.getSkipped() %></td>
+					  			<td scope="col"><%=result.getWrong() %></td>
+					  		</tr>
+						<%
+					}
 				}
+				
 			%>		
 		  </tbody>
 		</table>

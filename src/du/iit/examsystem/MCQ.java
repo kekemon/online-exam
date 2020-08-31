@@ -70,4 +70,18 @@ public class MCQ{
 		return answers;
 	}
 	
+	public Answer getAnswer(User student) {
+		for (Answer answer : answers) {
+			if (answer.getStudent().equals(student)) {
+				return answer;
+			}
+		}
+		return null;
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		MCQ temp = (MCQ) object;
+		return this.getID() == temp.getID();
+	}
 }

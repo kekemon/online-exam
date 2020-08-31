@@ -11,11 +11,14 @@ public class SampleData {
 		
 		Set<MCQ> mcqs = new HashSet<>();
 		MCQ mcq1 = new MCQ("My Question", "option1", "option2", "option3", "option4", 1);
-		MCQ mcq2 = new MCQ("My Question", "option1", "option2", "option3", "option4", 1);
+		MCQ mcq2 = new MCQ("My Question", "option1", "option2", "option3", "option4", 2);
+		MCQ mcq3 = new MCQ("My Question", "option1", "option2", "option3", "option4", 3);
 		
 		mcqs.add(mcq1);
 		mcqs.add(mcq2);
-		Exam exam = CommonUtits.addExam(teacher.getID(), "subject", 90, mcqs);
+		mcqs.add(mcq3);
+		
+		CommonUtits.addExam(teacher.getID(), "subject", 10, mcqs);
 		
 		CommonUtits.addAnswer(student.getID(), mcq1.getID(), 1);
 		CommonUtits.addAnswer(student.getID(), mcq1.getID(), 1);
