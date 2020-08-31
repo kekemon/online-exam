@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <%@page contentType="text/html; charset=UTF-8"%>
+<%@page import="java.util.*"%>
 <%@page import="du.iit.examsystem.*"%>
 <%@page import="du.iit.examsystem.helper.*"%>
 
@@ -30,14 +31,13 @@
 	} else {
 		mcq = CommonUtits.getMCQ(Integer.parseInt(mcqID));
 	}
+	int mcqIDs[] = CommonUtits.getMCQs(Integer.parseInt(examID));
 %>
 
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="icon" href="https://getbootstrap.com/docs/4.0/assets/img/favicons/favicon.ico">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="icon" href="./resources/download.png">
     <link href="https://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" rel="stylesheet" />
-	<script src="https://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
 	<title>Online Exam System</title>
 
     <!-- Bootstrap core CSS -->
@@ -45,7 +45,9 @@
 
     <!-- Custom styles for this template -->
     <link href="./resources/form-validation.css" rel="stylesheet">
-
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+    
     <style>
     	button {
 	    	background-color: Transparent;
@@ -119,8 +121,17 @@
     
       <div class="py-4 text-center">
         <img class="d-block mx-auto mb-1" src="./resources/download.png" alt="" width="100" height="60">
-       </div>
-
+      </div>
+      
+      <div class="row">
+		<div class="col-md-3 mb-3 mr-auto">
+			<label><b>Question <%= (Arrays.binarySearch(mcqIDs, mcq.getID()) +1) + " of " + mcqIDs.length%></b></label>
+		</div>
+		<div class="col-md-3 mb-3 ml-auto">
+			<label style="display:block;text-align:right;"><b>Remaining : </b><span id="time"></span> minutes!</label>
+		</div>
+      </div>
+      
       <div class="row">
         <div class="col-md-12 order-md-1">
           <form id= "mainForm" class="needs-validation"  novalidate="" method="post">
@@ -209,6 +220,31 @@
         
     <script src="./resources/bootstrap.min.js.download"></script>
     <script>	
+    window.onload = function () {
+        var seconds = <%= CommonUtits.getRemainTime(user.getID(), Integer.parseInt(examID))%>, 
+        display = document.querySelector('#time');
+    	startTimer(seconds, display);
+		
+    };
+    
+    function startTimer(duration, display) {
+        var timer = duration, minutes, seconds;
+        setInterval(function () {
+        	if (--timer <= 0) {
+                timer = 0;
+            }
+        	
+        	minutes = parseInt(timer / 60, 10)
+            seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent =minutes + ":" + seconds;
+
+            
+        }, 1000);
+    }
     
     function finishExam() {
     	var answer = Array();

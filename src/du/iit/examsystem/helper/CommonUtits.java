@@ -126,6 +126,15 @@ public class CommonUtits {
 		return null;
 	}
 	
+	public static long getRemainTime(int studentID, int examID) {
+		Result result = getResult(studentID, examID);
+		Exam exam = getExam(examID);
+		Date now = new Date();
+		long remain = exam.getDuration()*60*1000 - (now.getTime()-result.getStartDateTime().getTime());
+		return remain/1000;
+	}
+	
+	
 	public static boolean isFinisedExam(int studentID, int examID) {
 		Result result = getResult(studentID, examID);
 		if (result == null || result.getEndDateTime() == null) {
