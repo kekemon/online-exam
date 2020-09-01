@@ -1,5 +1,3 @@
-### Warning ( I have disabled Google Cloud Console so some features of the application like ( image loading will not work ) but the code is there :)
-
 ## How to run
   - Download Eclipse IDE for Java EE & Install
   - Download mysql server and install
