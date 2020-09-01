@@ -174,9 +174,9 @@ public class CommonUtits {
 			}
 			return false;
 		} 
-		System.out.println("SS");
-		Exam exam = getExam(examID);
-		Result mResult = new Result(getUser(studentID), new Date());
+
+		final Exam exam = getExam(examID);
+		final Result mResult = new Result(getUser(studentID), new Date());
 		exam.getResults().add(mResult);
 		DatabaseUtils.update(exam);
 		
