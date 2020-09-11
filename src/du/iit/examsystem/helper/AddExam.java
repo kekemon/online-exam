@@ -9,7 +9,6 @@ import du.iit.examsystem.*;
 import javax.servlet.annotation.*;
 
 @WebServlet(urlPatterns = "/add-exam")
-@MultipartConfig
 public class AddExam  extends HttpServlet{
 	/**
 	 * 
@@ -49,9 +48,7 @@ public class AddExam  extends HttpServlet{
 				String option2 = mjJsonObject.getString("option2");
 				String option3 = mjJsonObject.getString("option3");
 				String option4 = mjJsonObject.getString("option4");
-				//int answer = 1;
 				int answer = mjJsonObject.getInt("answer");
-				System.out.println(question + " " + option1 + " " + option2 + " " + option3 + " " + option4 + " " + answer);
 				mcqs.add(new MCQ(question, option1, option2, option3, option4, answer));
 			}
 			

@@ -12,7 +12,6 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 
 @WebServlet(urlPatterns = "/login")
-@MultipartConfig
 public class Login  extends HttpServlet{
 	/**
 	 * 
@@ -25,6 +24,7 @@ public class Login  extends HttpServlet{
 		
 		StringBuilder sb = new StringBuilder();
 	    BufferedReader reader = request.getReader();
+	    
 	    PrintWriter out = response.getWriter();
 	    response.setContentType("application/text");
         response.setCharacterEncoding("UTF-8");

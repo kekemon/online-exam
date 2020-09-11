@@ -4,12 +4,12 @@ import java.util.Date;
 import javax.persistence.*;
 
 @Entity
-public class Result {
+public class ExamSheet {
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
 	protected int ID;
 
 	@ManyToOne(cascade = CascadeType.ALL)
-	private User student;
+	private Student student;
 	
 	@Basic
     private Date startDateTime;
@@ -25,9 +25,9 @@ public class Result {
 	@Column
 	private int wronng;
 	
-	public Result() {}
+	public ExamSheet() {}
 	
-	public Result(User student, Date startDateTime) {
+	public ExamSheet(Student student, Date startDateTime) {
 		this.student = student;
 		this.startDateTime = startDateTime;
 	}
@@ -36,7 +36,7 @@ public class Result {
 		return ID;
 	}
 
-	public void publishResult(int correct, int skipped, int wrong) {
+	public void mark(int correct, int skipped, int wrong) {
 		this.endDateTime = new Date();
 		this.correct = correct;
 		this.skipped = skipped;
@@ -69,7 +69,7 @@ public class Result {
 	
 	@Override
 	public boolean equals(Object object) {
-		Result temp = (Result) object;
+		ExamSheet temp = (ExamSheet) object;
 		return this.getID() == temp.getID();
 	}
 }

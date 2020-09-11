@@ -13,17 +13,17 @@ public class Exam {
 	protected int duration;
 	
 	@ManyToOne(cascade = CascadeType.ALL)
-	private User teacher;
+	private Teacher teacher;
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	private Set<MCQ> mcqs;
 	
 	@OneToMany(cascade = CascadeType.ALL)
-	private Set<Result> results;
+	private Set<ExamSheet> examSheets;
 	
 	public Exam() {}
 	
-	public Exam(User teacher, String subject, int duration, Set<MCQ> mcqs) {
+	public Exam(Teacher teacher, String subject, int duration, Set<MCQ> mcqs) {
 		this.teacher = teacher;
 		this.subject = subject;
 		this.duration = duration;
@@ -50,14 +50,14 @@ public class Exam {
 		return mcqs;
 	}
 
-	public Set<Result> getResults() {
-		return results;
+	public Set<ExamSheet> getExamSheets() {
+		return examSheets;
 	}
 
-	public Result getResult(User student) {
-		for (Result result : results) {
-			if (result.getStudent().equals(student)) {
-				return result;
+	public ExamSheet getExamSheet(User student) {
+		for (ExamSheet examSheet : examSheets) {
+			if (examSheet.getStudent().equals(student)) {
+				return examSheet;
 			}
 		}
 		return null;

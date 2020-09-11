@@ -14,9 +14,11 @@
   - Student can see result
 
 ## OOP Features covered
+  - String, Array, List & Set
+  - Encapsulation
   - Abstract Class
+  - Interface
   - Inheritance 
   - Overrding
   - Thread
-  - Encapsulation
-  - String, Array & List
+  

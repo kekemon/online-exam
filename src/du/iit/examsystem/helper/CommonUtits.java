@@ -77,10 +77,10 @@ public class CommonUtits {
 	}
 	
 	public static Exam addExam(int teacherID, String subject, int duration, Set<MCQ> mcqs) {
-		Exam exam = new Exam(getUser(teacherID), subject, duration, mcqs);
+		Teacher teacher = (Teacher)getUser(teacherID);
+		Exam exam = teacher.addExam(subject, duration, mcqs);
 		
 		DatabaseUtils.save(exam);
-		
 		return exam;
 	}
 	
@@ -98,7 +98,7 @@ public class CommonUtits {
 	}
 	
 	public static void addAnswer(int studentID, int mcqID, int studentChoice) {
-		User student = getUser(studentID);
+		Student student = (Student)getUser(studentID);
 		MCQ mcq = getMCQ(mcqID);
 		Set<Answer> answers = mcq.getAnswers();
 		for (Answer answer : answers) {
@@ -114,12 +114,12 @@ public class CommonUtits {
 		DatabaseUtils.update(mcq);
 	}
 	
-	public static Result getResult(int studentID, int examID) {
+	public static ExamSheet getExamSheet(int studentID, int examID) {
 		Exam exam = getExam(examID);
 		
-		for (Result result : exam.getResults()) {
-			if (result.getStudent().getID() == studentID) {
-				return result;
+		for (ExamSheet examSheet : exam.getExamSheets()) {
+			if (examSheet.getStudent().getID() == studentID) {
+				return examSheet;
 			}
 		}
 		
@@ -127,30 +127,30 @@ public class CommonUtits {
 	}
 	
 	public static long getRemainTime(int studentID, int examID) {
-		Result result = getResult(studentID, examID);
+		ExamSheet examSheet = getExamSheet(studentID, examID);
 		Exam exam = getExam(examID);
 		Date now = new Date();
-		long remain = exam.getDuration()*60*1000 - (now.getTime()-result.getStartDateTime().getTime());
+		long remain = exam.getDuration()*60*1000 - (now.getTime()-examSheet.getStartDateTime().getTime());
 		return remain/1000;
 	}
 	
 	
 	public static boolean isFinisedExam(int studentID, int examID) {
-		Result result = getResult(studentID, examID);
-		if (result == null || result.getEndDateTime() == null) {
+		ExamSheet examSheet = getExamSheet(studentID, examID);
+		if (examSheet == null || examSheet.getEndDateTime() == null) {
 			return false;
 		} 
 		return true;
 	}	
 	
-	public static void finisExam(Exam exam, Result result) {
-		if (result.getEndDateTime() == null) {
+	public static void finisExam(Exam exam, ExamSheet examSheet) {
+		if (examSheet.getEndDateTime() == null) {
 			int correct = 0;
 			int wrong = 0;
 			int skiped = 0;
 			
 			for (MCQ mcq : exam.getMcqs()) {
-				Answer answer = mcq.getAnswer(result.getStudent());
+				Answer answer = mcq.getAnswer(examSheet.getStudent());
 				if (answer == null) {
 					skiped++;
 				} else if (answer != null && answer.getStudentChoice() == mcq.getCorrectAns()) {
@@ -160,24 +160,25 @@ public class CommonUtits {
 				}
 			}
 			
-			result.publishResult(correct, skiped, wrong);
-			DatabaseUtils.update(result);
+			examSheet.mark(correct, skiped, wrong);
+			DatabaseUtils.update(examSheet);
 		}
 	}
 		
 	
 	public static boolean startExam(int studentID, int examID) {
-		Result result = getResult(studentID, examID);
-		if (result != null) {
-			if (result.getEndDateTime() == null) {
+		ExamSheet examSheet = getExamSheet(studentID, examID);
+		if (examSheet != null) { // If student already started exam
+			if (examSheet.getEndDateTime() == null) { // If exam not finish yet
 				return true;
 			}
 			return false;
 		} 
-
-		final Exam exam = getExam(examID);
-		final Result mResult = new Result(getUser(studentID), new Date());
-		exam.getResults().add(mResult);
+		
+		// If student not started exam yet
+		Exam exam = getExam(examID);
+		ExamSheet mexamSheet = new ExamSheet((Student)getUser(studentID), new Date());
+		exam.getExamSheets().add(mexamSheet);
 		DatabaseUtils.update(exam);
 		
 		new Thread(new Runnable() {
@@ -186,7 +187,7 @@ public class CommonUtits {
 			public void run() {
 				try {
 					Thread.sleep(1000 * 60 * exam.getDuration());
-					CommonUtits.finisExam(exam, mResult);
+					CommonUtits.finisExam(exam, mexamSheet);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

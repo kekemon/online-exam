@@ -8,7 +8,6 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 
 @WebServlet(urlPatterns = "/add-answer")
-@MultipartConfig
 public class AddAnswer  extends HttpServlet{
 	/**
 	 * 
@@ -44,7 +43,7 @@ public class AddAnswer  extends HttpServlet{
 			if (mcqID == -1) {
 				Exam exam = CommonUtits.getExam(examID);
 				User student = CommonUtits.getUser((Integer)userID);
-				CommonUtits.finisExam(exam, exam.getResult(student));
+				CommonUtits.finisExam(exam, exam.getExamSheet(student));
 				out.print("Successfully finised exam!");
 				return;
 			}

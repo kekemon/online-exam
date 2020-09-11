@@ -85,28 +85,29 @@
 		  <tbody id="mtbody">
 			<%
 				if (user instanceof Student) {
-					Result result = CommonUtits.getResult(user.getID(), Integer.parseInt(examID));
+					ExamSheet examSheet = CommonUtits.getExamSheet(user.getID(), Integer.parseInt(examID));
+					
 					%>
 						<tr>
-					  		<td scope="col"><%=result.getStudent().getFullName() %></td>
-					  		<td scope="col"><%=result.getStartDateTime() %></td>
-					  		<td scope="col"><%=result.getEndDateTime() %></td>
-					  		<td scope="col"><%=result.getCorrect() %></td>
-					  		<td scope="col"><%=result.getSkipped() %></td>
-					  		<td scope="col"><%=result.getWrong() %></td>
+					  		<td scope="col"><%=examSheet.getStudent().getFullName() %></td>
+					  		<td scope="col"><%=examSheet.getStartDateTime() %></td>
+					  		<td scope="col"><%=examSheet.getEndDateTime() %></td>
+					  		<td scope="col"><%=examSheet.getCorrect() %></td>
+					  		<td scope="col"><%=examSheet.getSkipped() %></td>
+					  		<td scope="col"><%=examSheet.getWrong() %></td>
 					  	</tr>
 					<%
 				} else {
 					Exam exam = CommonUtits.getExam(Integer.parseInt(examID));
-					for(Result result : exam.getResults()) {
+					for(ExamSheet examSheet : exam.getExamSheets()) {
 						%>
 							<tr>
-						  		<td scope="col"><%=result.getStudent().getFullName() %></td>
-						  		<td scope="col"><%=result.getStartDateTime() %></td>
-						  		<td scope="col"><%=result.getEndDateTime() %></td>
-						  		<td scope="col"><%=result.getCorrect() %></td>
-					  			<td scope="col"><%=result.getSkipped() %></td>
-					  			<td scope="col"><%=result.getWrong() %></td>
+						  		<td scope="col"><%=examSheet.getStudent().getFullName() %></td>
+						  		<td scope="col"><%=examSheet.getStartDateTime() %></td>
+						  		<td scope="col"><%=examSheet.getEndDateTime() %></td>
+						  		<td scope="col"><%=examSheet.getCorrect() %></td>
+					  			<td scope="col"><%=examSheet.getSkipped() %></td>
+					  			<td scope="col"><%=examSheet.getWrong() %></td>
 					  		</tr>
 						<%
 					}

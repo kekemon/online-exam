@@ -2,7 +2,6 @@ package du.iit.examsystem.helper;
 
 import java.util.List;
 import java.util.Properties;
-
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -44,7 +43,7 @@ public class DatabaseUtils {
                 configuration.addAnnotatedClass(Exam.class);
         		configuration.addAnnotatedClass(MCQ.class);
         		configuration.addAnnotatedClass(Answer.class);
-        		configuration.addAnnotatedClass(Result.class);
+        		configuration.addAnnotatedClass(ExamSheet.class);
         		configuration.addAnnotatedClass(User.class);
         		configuration.addAnnotatedClass(Student.class);
         		configuration.addAnnotatedClass(Teacher.class);

@@ -6,7 +6,6 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 
 @WebServlet(urlPatterns = "/logout")
-@MultipartConfig
 public class Logout  extends HttpServlet{
 	/**
 	 * 

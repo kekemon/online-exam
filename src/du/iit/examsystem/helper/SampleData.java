@@ -23,6 +23,6 @@ public class SampleData {
 		
 		CommonUtits.addAnswer(student1.getID(), mcq1.getID(), 1);
 		CommonUtits.addAnswer(student1.getID(), mcq1.getID(), 1);
-		CommonUtits.addAnswer(student1.getID(), mcq2.getID(), 1); 
+		CommonUtits.addAnswer(student1.getID(), mcq2.getID(), 1);
 	}
 }

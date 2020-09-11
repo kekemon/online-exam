@@ -8,14 +8,14 @@ public class Answer {
 	protected int ID;
 
 	@ManyToOne(cascade = CascadeType.ALL)
-	private User student;
+	private Student student;
 	
 	@Column
 	private int studentChoice;
 
 	public Answer() {}
 	
-	public Answer(User student, MCQ mcq, int studentChoice) {
+	public Answer(Student student, MCQ mcq, int studentChoice) {
 		this.student = student;
 		this.studentChoice = studentChoice;
 	}
