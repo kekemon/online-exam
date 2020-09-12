@@ -29,4 +29,4 @@
  
 ## Demo
 
-[<img src="https://img.youtube.com/vi/sIwLoQw0CJ0/maxresdefault.jpg" width="50%">](https://youtu.be/sIwLoQw0CJ0)
+[<img src="https://img.youtube.com/vi/sIwLoQw0CJ0/maxresdefault.jpg" width="75%">](https://youtu.be/sIwLoQw0CJ0)
