@@ -9,7 +9,8 @@
 ## Features
   - Login as student and Teacher
   - Teacher can add Exam
-  - Timer to show remaining to submit
+  - Number of question & remaining timer to submit
+  - Next, Previous to update given answer.
   - Auto Result calculate
   - Student can see result
 
@@ -19,6 +20,14 @@
   - Abstract Class
   - Interface
   - Inheritance 
-  - Overrding
+  - Overriding
   - Thread
-  
+
+## Class Diagram
+
+[![CD](https://github.com/kekemon/online-exam/blob/master/ClassDiagram.pdf)]
+ 
+## Demo
+
+[![Demo](https://github.com/kekemon/online-exam/blob/master/demo.mp4)]
+
