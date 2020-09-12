@@ -25,9 +25,9 @@
 
 ## Class Diagram
 
-[![CD](https://github.com/kekemon/online-exam/blob/master/ClassDiagram.pdf)]
+[Click Here](ClassDiagram.pdf)
  
 ## Demo
 
-[![Demo](https://github.com/kekemon/online-exam/blob/master/demo.mp4)]
+[![Demo](https://youtu.be/sIwLoQw0CJ0)]
 
